@@ -42,7 +42,7 @@ export interface GlowAdsProps {
   ctaHref?: string;
   onCtaClick?: () => void;
   badge?: React.ReactNode;
-  colorVariant?: 'primary' | 'secondary' | 'accent';
+  colorVariant?: 'primary' | 'secondary' | undefined;
   borderRadius?: number | string;
   layout?: 'banner' | 'square' | 'horizontal' | 'vertical' | 'fullwidth';
   gradient?: string;
@@ -143,7 +143,6 @@ const GlowAds: React.FC<GlowAdsProps> = ({
         {ctaLabel && (
           <div style={{ marginTop: 9 }}>
             <GlowingButton
-              colorVariant={colorVariant}
               onClick={onCtaClick}
               style={{ fontWeight: 800, padding: '8px 27px', fontSize: 16.5, borderRadius: 30, letterSpacing: '0.03em' }}
               glowIntensity={1.09}

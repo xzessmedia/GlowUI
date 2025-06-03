@@ -1,22 +1,14 @@
-/**
+/*******
  * GlowFancynator.tsx
  * 
  * A magical component that makes ANYTHING inside ultra-fancy with vibrant Glow effects!
  * Wrap any content in <GlowFancynator> to instantly make it vibrant, glowing, and animated.
- * 
- * Features:
- * - Injects vibrant color animations and glows to children
- * - Applies subtle animations and transformations
- * - Enhances text with gradient, shadow, and glow effects
- * - Makes images pop with fancy borders and effects
- * - Spreads the Glow magic to boring components!
- */
-
+ ******/
 import React, { useRef, useEffect, useState } from 'react';
-import { styled, keyframes } from '@mui/material/styles';
+import { styled, keyframes } from '@mui/system';
 import Box from '@mui/material/Box';
+import type { CSSObject } from '@emotion/react';
 
-// Vibrant glow animation that pulses
 const shimmerGlow = keyframes`
   0%, 100% { 
     box-shadow: 0 0 40px 10px #8b5cf666, 0 0 100px 40px #38bdf833;
@@ -32,44 +24,37 @@ const shimmerGlow = keyframes`
   }
 `;
 
-// Fancy gradient animation for text and backgrounds
 const gradientMove = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 `;
 
-// Very subtle float animation
 const float = keyframes`
   0%, 100% { transform: translateY(0) rotate(0deg); }
   25% { transform: translateY(-5px) rotate(0.5deg); }
   75% { transform: translateY(5px) rotate(-0.5deg); }
 `;
 
-// The magical container that applies fancy effects
-const FancyContainer = styled(Box)<{
+const GlowFancynatorContainer = styled(Box)<{
   $intensity?: number;
   $color?: 'primary' | 'secondary' | 'accent' | 'rainbow';
   $animation?: 'subtle' | 'medium' | 'wild';
   $type?: 'text' | 'image' | 'component' | 'auto';
 }>(({ $intensity = 1, $color = 'rainbow', $animation = 'medium', $type = 'auto' }) => {
-  // Different color schemes based on preference
   const gradients = {
     primary: 'linear-gradient(90deg, #6366f1 0%, #38bdf8 50%, #8b5cf6 100%)',
     secondary: 'linear-gradient(90deg, #f472b6 0%, #9333ea 50%, #8b5cf6 100%)',
     accent: 'linear-gradient(90deg, #05ffa1 0%, #38bdf8 50%, #6366f1 100%)',
     rainbow: 'linear-gradient(90deg, #f472b6 0%, #9333ea 20%, #8b5cf6 40%, #6366f1 60%, #38bdf8 80%, #05ffa1 100%)'
   };
-  
-  // Animation speed based on preference
   const speeds = {
     subtle: '8s',
     medium: '5s',
     wild: '3s'
   };
 
-  // Base styles that apply to all types
-  const baseStyles = {
+  const baseStyles: CSSObject = {
     position: 'relative',
     zIndex: 1,
     animation: `${float} ${speeds[$animation]} ease-in-out infinite`,
@@ -77,8 +62,6 @@ const FancyContainer = styled(Box)<{
     boxShadow: `0 0 ${30 * $intensity}px ${$intensity * 8}px #8b5cf644`,
     filter: `saturate(${1 + $intensity * 0.3}) contrast(${1 + $intensity * 0.1})`,
     overflow: 'visible',
-    
-    // Hover state intensifies the effect
     '&:hover': {
       transform: 'scale(1.03)',
       boxShadow: `0 0 ${50 * $intensity}px ${$intensity * 15}px #05ffa166`,
@@ -86,12 +69,11 @@ const FancyContainer = styled(Box)<{
     }
   };
 
-  // Text-specific styles
-  const textStyles = {
+  const textStyles: CSSObject = {
     background: gradients[$color],
     backgroundSize: '200% 200%',
     backgroundClip: 'text',
-    textFillColor: 'transparent',
+    color: 'transparent',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     textShadow: `0 0 ${10 * $intensity}px #8b5cf6bb`,
@@ -100,8 +82,7 @@ const FancyContainer = styled(Box)<{
     animation: `${gradientMove} ${speeds[$animation]} ease infinite, ${float} ${speeds[$animation]} ease-in-out infinite`,
   };
 
-  // Image-specific styles
-  const imageStyles = {
+  const imageStyles: CSSObject = {
     borderRadius: 20,
     padding: $intensity * 0.2 + 'rem',
     background: gradients[$color],
@@ -115,8 +96,7 @@ const FancyContainer = styled(Box)<{
     }
   };
 
-  // Component-specific styles
-  const componentStyles = {
+  const componentStyles: CSSObject = {
     padding: $intensity * 0.5 + 'rem',
     borderRadius: 25,
     background: `linear-gradient(135deg, #181b3955 55%, #38bdf811 100%)`,
@@ -127,12 +107,10 @@ const FancyContainer = styled(Box)<{
     borderImageSlice: 1,
   };
 
-  // Return appropriate style combination based on content type
-  if ($type === 'text') return { ...baseStyles, ...textStyles };
-  if ($type === 'image') return { ...baseStyles, ...imageStyles };
-  if ($type === 'component') return { ...baseStyles, ...componentStyles };
+  if ($type === 'text') return { ...baseStyles, ...textStyles } as CSSObject;
+  if ($type === 'image') return { ...baseStyles, ...imageStyles } as CSSObject;
+  if ($type === 'component') return { ...baseStyles, ...componentStyles } as CSSObject;
   
-  // 'auto' will handle various content types with sensible defaults
   return { 
     ...baseStyles, 
     animation: `${shimmerGlow} ${speeds[$animation]} ease-in-out infinite`,
@@ -151,7 +129,7 @@ const FancyContainer = styled(Box)<{
         boxShadow: `0 0 ${20 * $intensity}px ${$intensity * 5}px #05ffa166`
       }
     }
-  };
+  } as CSSObject;
 });
 
 export interface GlowFancynatorProps {
@@ -159,14 +137,11 @@ export interface GlowFancynatorProps {
   intensity?: number; // 0.5 to 3 (default: 1)
   color?: 'primary' | 'secondary' | 'accent' | 'rainbow';
   animation?: 'subtle' | 'medium' | 'wild';
-  type?: 'text' | 'image' | 'component' | 'auto'; // content type for specialized effects
+  type?: 'text' | 'image' | 'component' | 'auto';
   className?: string;
   style?: React.CSSProperties;
 }
 
-/**
- * GlowFancynator - Makes everything inside ultra fancy and vibrant!
- */
 const GlowFancynator: React.FC<GlowFancynatorProps> = ({
   children,
   intensity = 1,
@@ -176,24 +151,16 @@ const GlowFancynator: React.FC<GlowFancynatorProps> = ({
   className,
   style
 }) => {
-  // Add some fancy entrance animation
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsVisible(true);
-    
-    // Optional: Detect what kind of content is inside and optimize effects
-    const detectContentType = () => {
-      if (type !== 'auto') return;
-      // Could add auto-detection logic here in a more advanced version
-    };
-    
-    detectContentType();
+    // Could add auto-detection logic here
   }, [type]);
 
   return (
-    <FancyContainer
+    <GlowFancynatorContainer
       ref={containerRef}
       $intensity={intensity}
       $color={color}
@@ -208,7 +175,7 @@ const GlowFancynator: React.FC<GlowFancynatorProps> = ({
       }}
     >
       {children}
-    </FancyContainer>
+    </GlowFancynatorContainer>
   );
 };
 
