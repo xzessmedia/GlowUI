@@ -1,5 +1,4 @@
-name: Release
-
+name: Release and Publish to npm
 on:
   push:
     branches:
@@ -16,11 +15,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Semantic Release
+      - name: Semantic Release (npm + GitHub)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx semantic-release
