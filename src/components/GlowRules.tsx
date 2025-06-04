@@ -8,6 +8,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/WarningAmber';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import GlowTypography from './GlowTypography';
 
 const ruleGlowAnim = keyframes`
   0%,100% { box-shadow: 0 0 12px #05ffa160, 0 0 30px #8b5cf640; }
@@ -43,9 +44,15 @@ const ruleColors = {
   default: { color: '#8b5cf6', shadow: '#8b5cf666', Icon: InfoIcon }
 };
 
-const RuleCard = styled('div')<{status?: any, featured?: boolean, expanded?: boolean}>(
+type RuleStatus = keyof typeof ruleColors;
+
+const RuleCard = styled('div')<{
+  status?: RuleStatus;
+  featured?: boolean;
+  expanded?: boolean;
+}>(
   ({ status = 'default', featured, expanded }) => {
-    const glowColor = ruleColors[status]?.shadow || ruleColors.default.shadow;
+    const glowColor = ruleColors[status as RuleStatus]?.shadow || ruleColors.default.shadow;
     return {
       background: featured
         ? 'linear-gradient(110deg, #05ffa110 50%, #8b5cf625 100%)'
@@ -63,40 +70,16 @@ const RuleCard = styled('div')<{status?: any, featured?: boolean, expanded?: boo
   }
 );
 
-const RuleTitle = styled('div')<{status?:string}>(({status}) => ({
+const RuleTitle = styled('div')<{status?: RuleStatus}>(({status}) => ({
   fontWeight: 700,
   fontSize: 18,
-  color: ruleColors[status as keyof typeof ruleColors]?.color || ruleColors.default.color,
+  color: ruleColors[status ?? 'default']?.color || ruleColors.default.color,
   marginBottom: 5,
   display: 'flex',
   alignItems: 'center',
   gap: 8,
   textShadow: '0 0 7px #05ffa144, 0 2px 6px #8b5cf677'
 }));
-
-const RuleDesc = styled('div')(() => ({
-  fontWeight: 400,
-  fontSize: 15.2,
-  color: "#fff",
-  textShadow: '0 0 6px #8b5cf633',
-  marginBottom: 0,
-  lineHeight: 1.55,
-  opacity: 0.96,
-  marginTop: 2
-}));
-
-const RuleTag = styled('span')({
-  display: 'inline-block',
-  background: 'linear-gradient(98deg,#38bdf822 60%,#8b5cf633 120%)',
-  color: '#05ffa1',
-  borderRadius: 7,
-  fontSize: 12.5,
-  padding: '2.5px 9px',
-  marginRight: 5,
-  marginBottom: 2,
-  fontWeight: 500,
-  letterSpacing: '.01em',
-});
 
 const ExpandIconBox = styled('span')<{expanded?:boolean}>(({expanded}) => ({
   transition: 'transform 0.3s cubic-bezier(.42,2.12,.58,1.21)',
@@ -105,12 +88,10 @@ const ExpandIconBox = styled('span')<{expanded?:boolean}>(({expanded}) => ({
   alignItems: 'center',
 }));
 
-// ------- Types -------
-
 export interface GlowRule {
   title: React.ReactNode;
   description?: React.ReactNode;
-  status?: 'success' | 'warning' | 'error' | 'info' | 'default';
+  status?: RuleStatus;
   tags?: string[];
   featured?: boolean;
   icon?: React.ReactNode;
@@ -125,6 +106,25 @@ export interface GlowRulesProps {
   style?: React.CSSProperties;
   cardStyle?: React.CSSProperties;
   onRuleClick?: (idx: number) => void;
+
+  orientation?: 'vertical' | 'horizontal' | 'grid';
+  ruleGap?: number | string;
+  showHeader?: boolean;
+  stickyHeader?: boolean;
+  maxNestingDepth?: number;
+  defaultExpandDepth?: number;
+  cardBorderRadius?: number | string;
+  cardShadow?: string;
+  animationDuration?: number;
+  showTags?: boolean;
+  tagVariant?: 'chip' | 'pill' | 'text';
+  tagGradient?: string;
+  showIcons?: boolean;
+  iconSize?: number;
+  customRenderTitle?: (rule: GlowRule) => React.ReactNode;
+  customRenderDescription?: (rule: GlowRule) => React.ReactNode;
+  customRenderTag?: (tag: string, rule: GlowRule) => React.ReactNode;
+  customRenderCard?: (rule: GlowRule, children: React.ReactNode) => React.ReactNode;
 }
 
 const GlowRules: React.FC<GlowRulesProps> = ({
@@ -133,56 +133,75 @@ const GlowRules: React.FC<GlowRulesProps> = ({
   style,
   cardStyle,
   onRuleClick,
+  orientation = 'vertical',
+  ruleGap = 14,
+  showHeader = true,
+  showTags = true,
+  tagGradient = 'linear-gradient(90deg,#00ff99,#8b5cf6)',
+  customRenderTitle,
+  customRenderDescription,
+  customRenderTag,
+  customRenderCard,
+  showIcons = true,
+  iconSize = 19,
 }) => {
-  // Track expanded rules for expandable ones
   const [expanded, setExpanded] = useState<{[k:number]:boolean}>({});
-
-  const handleExpand = (idx: number) => setExpanded(e => ({
-    ...e,
-    [idx]: !e[idx]
-  }));
-
+  const handleExpand = (idx: number) => setExpanded(e => ({...e, [idx]: !e[idx]}));
   return (
     <GlowCard
       glass glow animated
       gradient='linear-gradient(120deg,#181b39 55%,#38bdf855 110%)'
       borderRadius={32}
       style={{
-        maxWidth: 620,
+        maxWidth: orientation === 'vertical' ? 620 : undefined,
         minWidth: 300,
         width: '100%',
         ...style, ...cardStyle
       }}
     >
-      {header && <RulebookHeader>{header}</RulebookHeader>}
-      <RuleList>
+      {showHeader && header && <RulebookHeader>{header}</RulebookHeader>}
+      <RuleList
+        sx={{
+          flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+          gap: ruleGap,
+          flexWrap: orientation === 'horizontal' ? 'wrap' : undefined,
+        }}
+      >
         {rules.map((rule, i) => {
           const status = rule.status || 'default';
           const colorSet = ruleColors[status] || ruleColors.default;
           const Icon = rule.icon || colorSet.Icon;
           const expand = rule.expandable;
           const isExpanded = expanded[i] ?? rule.expandedByDefault ?? false;
-          return (
-            <RuleCard
-              key={i} 
-              status={status}
-              featured={rule.featured}
-              expanded={expand && isExpanded}
-              onClick={() => {
-                if(expand) handleExpand(i);
-                onRuleClick?.(i);
-              }}
-            >
-              <RuleTitle status={status}>
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  fontSize: 21,
-                  filter: `drop-shadow(0 0 6px ${colorSet.color}a0)`
-                }}>
-                  {typeof Icon === 'function' ? <Icon sx={{fontSize: 19, color: colorSet.color}} /> : Icon}
-                </span>
-                {rule.title}
+          let cardContent = (
+            <>
+              <RuleTitle status={status as RuleStatus}>
+                {showIcons && Icon && typeof Icon === 'function' ? (
+                  <span style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    fontSize: iconSize,
+                    marginRight: 6,
+                    filter: `drop-shadow(0 0 6px ${colorSet.color}a0)`
+                  }}>
+                    <Icon sx={{ fontSize: iconSize, color: colorSet.color }} />
+                  </span>
+                ) : null}
+                {customRenderTitle
+                  ? customRenderTitle(rule)
+                  : (
+                      <GlowTypography
+                        variant="h6"
+                        clipText
+                        glow
+                        gradient={status === 'success' ? 'linear-gradient(90deg,#00ff99,#38d1c4)' : status === 'error' ? 'linear-gradient(90deg,#ef4444,#f472b6)' : status === 'info' ? 'linear-gradient(90deg,#38bdf8,#8b5cf6)' : status === 'warning' ? 'linear-gradient(90deg,#ffab00,#00ff99)' : 'linear-gradient(90deg,#8b5cf6,#38d1c4,#00ff99)'}
+                        fontWeight={900}
+                        sx={{ display: 'inline-block', ml: 0.7 }}
+                      >
+                        {rule.title}
+                      </GlowTypography>
+                    )
+                }
                 {expand && (
                   <ExpandIconBox expanded={isExpanded}>
                     <ExpandMoreIcon sx={{
@@ -195,19 +214,80 @@ const GlowRules: React.FC<GlowRulesProps> = ({
               </RuleTitle>
               {(isExpanded || !expand) && (
                 <>
-                  {rule.description && <RuleDesc>{rule.description}</RuleDesc>}
+                  {rule.description && (
+                    customRenderDescription
+                      ? customRenderDescription(rule)
+                      : (
+                          <GlowTypography variant="body2" glow glowColor={colorSet.color} fontWeight={500} clipText={false} sx={{ mb: 0.5, mt: 0.2 }}>
+                            {rule.description}
+                          </GlowTypography>
+                        )
+                  )}
                   <div>
-                    {rule.tags && rule.tags.map((tag, tidx) => <RuleTag key={tidx}>{tag}</RuleTag>)}
+                    {showTags && rule.tags && rule.tags.map((tag, tidx) => (
+                      customRenderTag
+                        ? customRenderTag(tag, rule)
+                        : (
+                            <GlowTypography
+                              key={tidx}
+                              variant="caption"
+                              glow
+                              clipText
+                              gradient={tagGradient}
+                              fontWeight={600}
+                              sx={{
+                                display: 'inline-block',
+                                mr: 1,
+                                mb: 0.5,
+                                px: 1.5,
+                                py: 0.2,
+                                borderRadius: 6,
+                                background: 'rgba(0,255,153,0.08)'
+                              }}
+                            >
+                              {tag}
+                            </GlowTypography>
+                          )
+                    ))}
                   </div>
                   {rule.children && (
                     <Box sx={{ mt: 1, pl: 2.8, borderLeft: '2px solid #8b5cf633'}}>
-                      <GlowRules rules={rule.children} header={null}/>
+                      <GlowRules
+                        rules={rule.children}
+                        header={null}
+                        orientation={orientation}
+                        ruleGap={ruleGap}
+                        showTags={showTags}
+                        tagGradient={tagGradient}
+                        showIcons={showIcons}
+                        iconSize={iconSize}
+                        customRenderTitle={customRenderTitle}
+                        customRenderDescription={customRenderDescription}
+                        customRenderTag={customRenderTag}
+                        customRenderCard={customRenderCard}
+                      />
                     </Box>
                   )}
                 </>
               )}
-            </RuleCard>
+            </>
           );
+          return customRenderCard
+            ? customRenderCard(rule, cardContent)
+            : (
+                <RuleCard
+                  key={i}
+                  status={status as RuleStatus}
+                  featured={rule.featured}
+                  expanded={expand && isExpanded}
+                  onClick={() => {
+                    if(expand) handleExpand(i);
+                    onRuleClick?.(i);
+                  }}
+                >
+                  {cardContent}
+                </RuleCard>
+              );
         })}
       </RuleList>
     </GlowCard>

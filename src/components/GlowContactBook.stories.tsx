@@ -40,22 +40,35 @@ const meta: Meta = {
   title: 'Components/GlowContactBook',
   component: GlowContactBook,
   args: {
+    open: true,
+    onClose: () => {},
+  },
+};
+
+export default meta;
+
+export const Default: StoryObj = {
+  args: {
     contacts,
     showSearch: true,
     header: 'Contacts',
   },
 };
 
-export default meta;
-
-export const Default: StoryObj = {};
-
 export const Grouped: StoryObj = {
-  args: { groups }
+  args: {
+    groups,
+    showSearch: true,
+    header: 'Contacts',
+  },
 };
 
 export const NoSearch: StoryObj = {
-  args: { showSearch: false }
+  args: {
+    contacts,
+    showSearch: false,
+    header: 'Contacts',
+  },
 };
 
 export const AddContact: StoryObj = {
@@ -65,6 +78,8 @@ export const AddContact: StoryObj = {
       <GlowContactBook
         {...args}
         contacts={list}
+        showSearch={true}
+        header="Contacts"
         addContactHandler={() => setList([...list, {
           name: "New User",
           status: "online",
@@ -77,5 +92,9 @@ export const AddContact: StoryObj = {
 };
 
 export const Empty: StoryObj = {
-  args: { contacts: [] }
+  args: {
+    contacts: [],
+    showSearch: true,
+    header: 'Contacts',
+  },
 };

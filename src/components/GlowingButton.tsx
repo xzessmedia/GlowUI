@@ -25,7 +25,8 @@ const StyledGlowButton = styled(Button, {
 
     return {
       position: 'relative',
-      padding: size === 'small'
+      padding:
+        size === 'small'
         ? '8px 24px'
         : size === 'large'
           ? '16px 40px'
@@ -35,12 +36,13 @@ const StyledGlowButton = styled(Button, {
       background: `linear-gradient(135deg, ${currentColor} 0%, ${currentDark} 100%)`,
       color: '#ffffff',
       fontWeight: 600,
-      fontSize: size === 'small'
+      fontSize:
+        size === 'small'
         ? '14px'
         : size === 'large'
           ? '18px'
           : '16px',
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: 'inherit', // was 'Inter, sans-serif'
       textTransform: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       overflow: 'hidden',

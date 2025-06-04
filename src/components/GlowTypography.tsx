@@ -1,78 +1,69 @@
 import React from 'react';
 import Typography, { TypographyProps } from '@mui/material/Typography';
-import { styled, keyframes } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
-// Keyframes for animated glow
-const glowAnim = keyframes`
-  0%, 100% {
-    text-shadow:
-      0 0 8px #8b5cf6cc,
-      0 0 20px #38bdf8aa,
-      0 2px 18px #f472b6bb;
-  }
-  48% {
-    text-shadow:
-      0 0 20px #f472b6cc,
-      0 0 38px #38bdf8cc,
-      0 3px 28px #8b5cf6cc;
-  }
-`;
+// Presets for common gradients and glows
+const GRADIENTS = {
+  primary: 'linear-gradient(90deg,#00ff99 0%,#36d1c4 60%,#8b5cf6 100%)',
+  secondary: 'linear-gradient(90deg,#f472b6,#8b5cf6,#38d1c4)',
+  warning: 'linear-gradient(90deg,#ffab00,#00ff99)',
+  error: 'linear-gradient(90deg,#ef4444,#ffab00)',
+  success: 'linear-gradient(90deg,#00ff99,#38d1c4)',
+};
 
-// Keyframes for animated gradient text (optional)
-const gradientAnim = keyframes`
-  from { background-position: 0% 60%;}
-  to { background-position: 100% 60%;}
-`;
+const DEFAULT_SHADOWS = [
+  '0 0 8px #00ff99',
+  '0 2px 16px #36d1c4',
+  '0 4px 22px #8b5cf6a8',
+  '0 5px 28px #05ffa197',
+];
 
 const StyledGlowTypography = styled(Typography, {
   shouldForwardProp: (prop) =>
-    !['glow', 'glowColor', 'glowIntensity', 'animated', 'gradientText', 'gradientColors', 'gradientAngle'].includes(prop as string),
+    ![
+      'glow',
+      'glowColor',
+      'glowIntensity',
+      'gradient',
+      'shadowColors',
+      'clipText'
+    ].includes(prop as string),
 })<{
   glow?: boolean;
   glowColor?: string;
   glowIntensity?: number;
-  animated?: boolean;
-  gradientText?: boolean;
-  gradientColors?: string[];
-  gradientAngle?: string;
+  gradient?: string;
+  shadowColors?: string[];
+  fontWeight?: number | string;
+  clipText?: boolean;
 }>(
   ({
-    glow = true,
-    glowColor = "#8b5cf6",
-    glowIntensity = 1.11,
-    animated = true,
-    gradientText = false,
-    gradientColors = ["#6366f1", "#f472b6", "#38bdf8"],
-    gradientAngle = "120deg",
+  glow = true,
+    glowColor = '#00ff99',
+    glowIntensity = 1.1,
+    gradient = GRADIENTS.primary,
+    shadowColors = DEFAULT_SHADOWS,
+    fontWeight = 700,
+    clipText = false,
   }) => ({
-    position: 'relative',
-    color: gradientText ? "transparent" : "#fff",
-    fontWeight: 800,
-    textTransform: 'inherit',
-    letterSpacing: '0.03em',
-    ...(glow && {
-      textShadow: `
-        0 0 ${10 * glowIntensity}px ${glowColor},
-        0 0 ${34 * glowIntensity}px #38bdf880,
-        0 2px ${18 * glowIntensity}px #f472b688
-      `,
-      ...(animated && {
-        animation: `${glowAnim} 2.7s alternate infinite`
-      }),
-    }),
-    ...(gradientText && {
-      background: `linear-gradient(${gradientAngle}, ${gradientColors.join(', ')})`,
+    color: clipText ? 'transparent' : undefined,
+    fontWeight,
+    letterSpacing: '0.012em',
+    ...(clipText && {
+      background: gradient,
+      backgroundClip: 'text',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-      backgroundSize: '220% 220%',
-      backgroundPosition: '0% 60%',
-      animation: animated
-        ? `${gradientAnim} 3.6s linear infinite alternate`
-        : undefined,
-      filter: 'drop-shadow(0 0 12px #38bdf866)',
+      textFillColor: 'transparent',
     }),
-    transition: 'text-shadow 0.16s, background 0.16s'
+    ...(glow && {
+      textShadow:
+        shadowColors.map((s) => s).join(',') +
+        `,0 0 ${10 * glowIntensity}px ${glowColor}`,
+      filter: `drop-shadow(0 0 ${14 * glowIntensity}px ${glowColor})`,
+    }),
+    transition: 'text-shadow 0.16s, color 0.22s, background 0.21s',
+    cursor: 'inherit'
   })
 );
 
@@ -80,30 +71,30 @@ export interface GlowTypographyProps extends TypographyProps {
   glow?: boolean;
   glowColor?: string;
   glowIntensity?: number;
-  animated?: boolean;
-  gradientText?: boolean;
-  gradientColors?: string[];
-  gradientAngle?: string;
+  gradient?: string;
+  shadowColors?: string[];
+  fontWeight?: number | string;
+  clipText?: boolean;
 }
 
 const GlowTypography: React.FC<GlowTypographyProps> = ({
   glow = true,
   glowColor,
   glowIntensity,
-  animated = true,
-  gradientText = false,
-  gradientColors,
-  gradientAngle,
+  gradient,
+  shadowColors,
+  fontWeight,
+  clipText = false,
   ...rest
 }) => (
   <StyledGlowTypography
     glow={glow}
     glowColor={glowColor}
     glowIntensity={glowIntensity}
-    animated={animated}
-    gradientText={gradientText}
-    gradientColors={gradientColors}
-    gradientAngle={gradientAngle}
+    gradient={gradient}
+    shadowColors={shadowColors}
+    fontWeight={fontWeight}
+    clipText={clipText}
     {...rest}
   />
 );

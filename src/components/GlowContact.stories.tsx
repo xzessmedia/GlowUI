@@ -1,54 +1,55 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
 import GlowContact from './GlowContact';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import GlowIconButton from './GlowIconButton';
 
-const meta: Meta = {
+export default {
   title: 'Components/GlowContact',
   component: GlowContact,
+  args: {
+    name: 'Alex Chen',
+    email: 'alex.chen@growly.app',
+    status: 'online',
+    isVerified: true,
+    avatar: '',
+  },
   argTypes: {
-    name: { control: 'text' },
     status: {
       control: 'radio',
-      options: ['online', 'idle', 'dnd', 'offline'],
+      options: ['online', 'away', 'offline'],
     },
-    accentColor: { control: 'radio', options: ['primary', 'secondary', 'accent'] },
-  },
+  }
+};
+
+export const Default = {
   args: {
-    name: 'Sky Doe',
+    name: 'Alex Chen',
+    email: 'alex.chen@growly.app',
     status: 'online',
-    accentColor: 'accent',
-    avatarSrc: 'https://randomuser.me/api/portraits/men/34.jpg',
-    statusText: 'Available for collab',
-    actions: (
-      <GlowIconButton colorVariant="primary" aria-label="options">
-        <MoreVertIcon />
-      </GlowIconButton>
-    ),
-  },
+    isVerified: true
+  }
 };
 
-export default meta;
-
-export const Default: StoryObj = {};
-
-export const Offline: StoryObj = {
-  args: { status: 'offline', statusText: 'Last seen 2 hours ago' }
+export const Away = {
+  args: {
+    name: 'Maria Rodriguez',
+    email: 'maria.r@garden.com',
+    status: 'away',
+    isVerified: true,
+  }
 };
 
-export const NoAvatar: StoryObj = {
-  args: { avatarSrc: undefined, statusText: 'No photo' }
+export const Offline = {
+  args: {
+    name: 'Tom Wilson',
+    email: 'tom.wilson@plants.io',
+    status: 'offline',
+    lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  }
 };
 
-export const NoActions: StoryObj = {
-  args: { actions: null }
-};
-
-export const Primary: StoryObj = {
-  args: { accentColor: 'primary' }
-};
-
-export const Secondary: StoryObj = {
-  args: { accentColor: 'secondary' }
+export const NoAvatar = {
+  args: {
+    name: 'No Avatar User',
+    email: 'no.avatar@example.com',
+    status: 'offline',
+  }
 };

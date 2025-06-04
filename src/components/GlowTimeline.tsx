@@ -1,234 +1,280 @@
 import React from 'react';
-import { styled, keyframes } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import GlowCard from './GlowCard';
-import GlowAvatar from './GlowAvatar';
+import GlowTypography from './GlowTypography';
 
-const timelineGlowAnim = keyframes`
-  0%,100% { box-shadow: 0 0 20px 4px #05ffa140, 0 0 40px 8px #8b5cf630; }
-  50% { box-shadow: 0 0 30px 8px #38bdf860, 0 0 60px 16px #8b5cf640; }
-`;
+interface TimelineGridConfig {
+  type: 'time' | 'frames' | 'custom';
+  step: number;
+  labelInterval?: number;
+  unit?: number;
+  unitLabel?: string;
+  timecodeFormatter?: (mark: number, idx: number) => React.ReactNode;
+  style?: React.CSSProperties;
+}
 
-const TimelineContainer = styled('div')({
-  position: 'relative',
-  paddingLeft: 40,
-});
-
-const TimelineLine = styled('div')({
-  position: 'absolute',
-  left: 20,
-  top: 0,
-  bottom: 0,
-  width: 3,
-  background: 'linear-gradient(180deg, #05ffa1 0%, #38bdf8 50%, #8b5cf6 100%)',
-  borderRadius: 2,
-  boxShadow: '0 0 12px #05ffa166, 0 0 24px #38bdf844',
-});
-
-const TimelineItem = styled('div')<{ featured?: boolean }>(({ featured }) => ({
-  position: 'relative',
-  marginBottom: 24,
-  paddingLeft: 24,
-  '&:last-child': {
-    marginBottom: 0,
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    left: -32,
-    top: 8,
-    width: 14,
-    height: 14,
-    borderRadius: '50%',
-    background: featured 
-      ? 'linear-gradient(135deg, #05ffa1 0%, #38bdf8 100%)'
-      : 'linear-gradient(135deg, #38bdf8 0%, #8b5cf6 100%)',
-    border: '2px solid #181b39',
-    boxShadow: featured
-      ? '0 0 16px #05ffa180, 0 0 32px #38bdf860'
-      : '0 0 12px #38bdf880, 0 0 24px #8b5cf650',
-    animation: featured ? `${timelineGlowAnim} 3s infinite alternate` : undefined,
-    zIndex: 2,
-  },
-}));
-
-const ItemHeader = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 12,
-  marginBottom: 8,
-});
-
-const ItemTitle = styled('div')<{ featured?: boolean }>(({ featured }) => ({
-  fontWeight: 700,
-  fontSize: 18,
-  color: '#fff',
-  textShadow: featured 
-    ? '0 0 16px #05ffa177, 0 2px 18px #38bdf888'
-    : '0 0 12px #8b5cf677, 0 2px 14px #38bdf866',
-  lineHeight: 1.2,
-}));
-
-const ItemTime = styled('div')({
-  fontSize: 14,
-  color: '#05ffa1',
-  fontWeight: 600,
-  opacity: 0.9,
-  marginLeft: 'auto',
-});
-
-const ItemSubtitle = styled('div')({
-  fontSize: 15,
-  color: '#38bdf8',
-  fontWeight: 500,
-  marginBottom: 6,
-  opacity: 0.92,
-});
-
-const ItemContent = styled('div')({
-  fontSize: 15,
-  color: '#fff',
-  lineHeight: 1.6,
-  opacity: 0.9,
-  marginBottom: 8,
-});
-
-const ItemMeta = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-  marginTop: 8,
-});
-
-const ItemBadge = styled('span')<{ variant?: 'success' | 'warning' | 'error' | 'info' }>(({ variant = 'info' }) => {
-  const colors = {
-    success: { bg: '#05ffa1', text: '#0a3d2e' },
-    warning: { bg: '#fbbf24', text: '#451a03' },
-    error: { bg: '#ef4444', text: '#450a0a' },
-    info: { bg: '#38bdf8', text: '#0c4a6e' },
-  };
-  
-  return {
-    display: 'inline-block',
-    background: colors[variant].bg,
-    color: colors[variant].text,
-    fontWeight: 700,
-    borderRadius: 6,
-    fontSize: 11,
-    padding: '3px 8px',
-    textTransform: 'uppercase',
-    letterSpacing: '.02em',
-    boxShadow: `0 0 8px ${colors[variant].bg}60`,
-  };
-});
-
-const ItemTag = styled('span')({
-  display: 'inline-block',
-  background: 'linear-gradient(98deg, #38bdf822 60%, #8b5cf633 120%)',
-  color: '#05ffa1',
-  borderRadius: 8,
-  fontSize: 12,
-  padding: '2px 8px',
-  fontWeight: 500,
-  marginRight: 4,
-});
-
-export interface GlowTimelineItemProps {
-  title: React.ReactNode;
-  subtitle?: React.ReactNode;
-  content?: React.ReactNode;
-  time?: React.ReactNode;
-  avatar?: string;
-  avatarVariant?: 'primary' | 'secondary' | 'accent';
-  badge?: {
-    text: React.ReactNode;
-    variant?: 'success' | 'warning' | 'error' | 'info';
-  };
-  tags?: string[];
-  featured?: boolean;
-  actions?: React.ReactNode;
+export interface GlowTimelineTrack {
+  id: string;
+  height?: number;
+  label?: React.ReactNode;
+  color?: string;
+  elements: Array<{
+    id: string;
+    start: number;
+    end: number;
+    content: React.ReactNode;
+    style?: React.CSSProperties;
+    color?: string;
+    glow?: boolean;
+  }>;
 }
 
 export interface GlowTimelineProps {
-  items: GlowTimelineItemProps[];
+  duration: number;
+  tracks: GlowTimelineTrack[];
+  grid?: TimelineGridConfig;
   header?: React.ReactNode;
   style?: React.CSSProperties;
   cardStyle?: React.CSSProperties;
-  animated?: boolean;
+  orientation?: 'horizontal' | 'vertical';
+  glow?: boolean;
+  lineColor?: string;
 }
 
-const TimelineHeader = styled('div')({
-  fontWeight: 900,
-  fontSize: 24,
-  letterSpacing: '.03em',
+const TimelineGrid = styled('div')<{
+  step: number;
+  duration: number;
+  orientation: 'horizontal' | 'vertical';
+}>(({ step, duration, orientation }) => ({
+  pointerEvents: 'none',
+  position: 'absolute',
+  zIndex: 2,
+  inset: 0,
+  ...(orientation === 'horizontal'
+    ? {
+        display: 'flex',
+        flexDirection: 'row',
+      width: '100%',
+        height: '100%',
+      }
+    : {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+      }),
+}));
+
+const TrackContainer = styled('div')<{
+  orientation: 'horizontal' | 'vertical';
+}>(({ orientation }) => ({
+  position: 'relative',
+  width: '100%',
+  display: 'flex',
+  flexDirection: orientation === 'horizontal' ? 'column' : 'row',
+  gap: 14,
+  paddingBottom: 8,
+}));
+
+const TrackLabel = styled('div')({
   color: '#fff',
-  marginBottom: 20,
-  textShadow: '0 0 18px #8b5cf677, 0 2px 20px #38bdf888',
-  textAlign: 'center',
+  fontWeight: 600,
+  fontSize: 13,
+  minWidth: 80,
+  textAlign: 'right',
+  paddingRight: 8,
+  opacity: 0.8,
 });
 
+const TrackElements = styled('div')<{
+  orientation: 'horizontal' | 'vertical';
+}>(({ orientation }) => ({
+  position: 'relative',
+  flex: 1,
+  height: orientation === 'horizontal' ? 32 : undefined,
+  minHeight: 32,
+  display: 'flex',
+  flexDirection: orientation === 'horizontal' ? 'row' : 'column',
+  ...(orientation === 'horizontal' && { alignItems: 'center' }),
+}));
+
 const GlowTimeline: React.FC<GlowTimelineProps> = ({
-  items = [],
+  duration,
+  tracks,
+  grid = { type: 'time', step: 10, labelInterval: 50, unit: 1 },
   header,
   style,
   cardStyle,
-  animated = true,
-}) => (
-  <GlowCard
-    glass
-    glow
-    animated={animated}
-    gradient="linear-gradient(120deg, #181b39 60%, #38bdf844 110%)"
-    borderRadius={32}
-    style={{
-      maxWidth: 600,
-      width: '100%',
-      margin: '0 auto',
-      ...style,
-      ...cardStyle,
+  orientation = 'horizontal',
+  glow = true,
+  lineColor = '#8b5cf6',
+}) => {
+  const stepSize = grid.step * (grid.unit ?? 1);
+  const stepCount = Math.ceil(duration / stepSize);
+  const toDisplay = (mark: number) => mark * (grid.unit ?? 1);
+  const formatLabel =
+    grid.timecodeFormatter ??
+    ((mark: number) =>
+      grid.type === 'frames'
+        ? `${toDisplay(mark)}${grid.unitLabel || 'f'}`
+        : grid.type === 'custom'
+          ? `${toDisplay(mark)}${grid.unitLabel || ''}`
+          : `${toDisplay(mark)}${grid.unitLabel || 's'}`);
+
+  return (
+    <GlowCard
+      glass
+      glow={glow}
+      animated
+      gradient="linear-gradient(120deg, #181b39 60%, #38bdf844 110%)"
+      borderRadius={32}
+      style={{
+        width: '100%',
+        maxWidth: 1200,
+        margin: '0 auto',
+        padding: 28,
+        ...style,
+        ...cardStyle,
     }}
   >
-    {header && <TimelineHeader>{header}</TimelineHeader>}
-    <TimelineContainer>
-      <TimelineLine />
-      {items.map((item, index) => (
-        <TimelineItem key={index} featured={item.featured}>
-          <ItemHeader>
-            {item.avatar && (
-              <GlowAvatar
-                src={item.avatar}
-                alt="timeline item"
-                colorVariant={item.avatarVariant || 'primary'}
-                shape="circle"
-                style={{ width: 32, height: 32 }}
-              />
-            )}
-            <div style={{ flex: 1 }}>
-              <ItemTitle featured={item.featured}>{item.title}</ItemTitle>
-              {item.subtitle && <ItemSubtitle>{item.subtitle}</ItemSubtitle>}
+      {header && (
+        <div
+          style={{
+            fontWeight: 900,
+            fontSize: 26,
+            color: '#fff',
+            marginBottom: 12,
+            textAlign: 'center',
+            textShadow: '0 0 28px #8b5cf677, 0 1px 24px #38bdf8',
+          }}
+        >
+          {header}
             </div>
-            {item.time && <ItemTime>{item.time}</ItemTime>}
-          </ItemHeader>
-          
-          {item.content && <ItemContent>{item.content}</ItemContent>}
-          
-          <ItemMeta>
-            {item.badge && (
-              <ItemBadge variant={item.badge.variant}>
-                {item.badge.text}
-              </ItemBadge>
             )}
-            {item.tags && item.tags.map((tag, i) => (
-              <ItemTag key={i}>{tag}</ItemTag>
-            ))}
-            {item.actions && (
-              <Box sx={{ marginLeft: 'auto' }}>{item.actions}</Box>
-            )}
-          </ItemMeta>
-        </TimelineItem>
-      ))}
-    </TimelineContainer>
-  </GlowCard>
-);
+      <div
+        style={{
+          position: 'relative',
+          padding:
+            orientation === 'horizontal'
+              ? '30px 12px 16px 0'
+              : '12px 0 12px 60px',
+        }}
+      >
+        <TimelineGrid orientation={orientation} step={grid.step} duration={duration}>
+          {Array.from({ length: stepCount + 1 }).map((_, i) => {
+            const mark = i * grid.step;
+            const mainColor = `hsl(${(360 / stepCount) * i},98%,66%)`;
+            return (
+              <div
+                key={mark}
+                style={{
+                  ...(orientation === 'horizontal'
+                    ? { left: `${(mark / duration) * 100}%`, position: 'absolute', top: 0, bottom: 0, borderLeft: `2px solid ${lineColor}` }
+                    : { top: `${(mark / duration) * 100}%`, position: 'absolute', left: 0, right: 0, borderTop: `2px solid ${lineColor}` }),
+                  opacity: 0.28 + 0.12 * Math.sin(i),
+                  filter: `blur(${i % 3 === 0 ? 0 : 1}px)`,
+                  zIndex: 0,
+                }}
+              >
+                {(grid.labelInterval && i % Math.max(1, Math.round(grid.labelInterval / grid.step)) === 0) && (
+                  <GlowTypography
+                    fontWeight={900}
+                    fontSize={11}
+                    shadowColors={['0 0 10px #111', '0 1px 8px #fff8', '0 0 2px #05ffa1a0']}
+                    gradient={`linear-gradient(90deg,${mainColor} 40%,#fff 100%)`}
+                    glowColor={mainColor}
+                    glowIntensity={2.1}
+              style={{
+                      position: 'absolute',
+                      top: orientation === 'horizontal' ? -24 : 0,
+                      left: orientation === 'horizontal' ? 0 : 8,
+                      letterSpacing: '.04em',
+                        textShadow: '0 1px 6px #000e',
+                        color: '#fff',
+                      textAlign: 'center',
+                      pointerEvents: 'none',
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+              }}
+            >
+                    {formatLabel(mark, i)}
+                  </GlowTypography>
+                )}
+                    </div>
+                  );
+                })}
+        </TimelineGrid>
+        <TrackContainer orientation={orientation}>
+          {tracks.map((track) => (
+            <div
+              key={track.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                height: track.height || 48,
+              }}
+            >
+              {track.label && <TrackLabel>{track.label}</TrackLabel>}
+              <TrackElements orientation={orientation}>
+                {track.elements.map((item) => {
+                  const len = Math.max(1, item.end - item.start);
+                  const posPercent = (item.start / duration) * 100;
+                  const sizePercent = (len / duration) * 100;
+                  return (
+                    <div
+                      key={item.id}
+                      style={{
+                        position: 'absolute',
+                        left:
+                          orientation === 'horizontal'
+                            ? `${posPercent}%`
+                            : undefined,
+                        width:
+                          orientation === 'horizontal'
+                            ? `${sizePercent}%`
+                            : '100%',
+                        top:
+                          orientation === 'vertical'
+                            ? `${posPercent}%`
+                            : undefined,
+                        height:
+                          orientation === 'vertical'
+                            ? `${sizePercent}%`
+                            : '100%',
+                        borderRadius: 18,
+                        background:
+                          item.color ||
+                          'linear-gradient(90deg,#38bdf8a0 60%,#8b5cf6dd 110%)',
+                        boxShadow:
+                          item.glow !== false
+                            ? '0 2px 24px 5px #05ffa160, 0 2px 48px 8px #8b5cf660'
+                            : undefined,
+                        zIndex: 10,
+                        border: '2px solid #fff4',
+                        transition: 'box-shadow 0.2s',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 800,
+                        fontSize: 14,
+                        color: '#fff',
+                        overflow: 'visible',
+                        cursor: 'pointer',
+                        padding: 4,
+                        ...item.style,
+                      }}
+                    >
+                      {item.content}
+      </div>
+  );
+                })}
+              </TrackElements>
+            </div>
+          ))}
+        </TrackContainer>
+      </div>
+    </GlowCard>
+  );
+};
 
 export default GlowTimeline;

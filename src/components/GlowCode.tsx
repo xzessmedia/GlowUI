@@ -3,10 +3,11 @@ import { styled, keyframes } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import GlowCard from './GlowCard';
 
-// If using PrismJS in your project, import the CSS once globally elsewhere
+// const Prism = require('prismjs');
 // import 'prismjs/themes/prism-tomorrow.css';
-// import Prism from 'prismjs';
-// import 'prismjs/components/prism-javascript';
+// import 'prismjs/components/prism-javascript'; // If using
+
+const codeFonts = `'JetBrains Mono', 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', monospace`;
 
 const codeGlowAnim = keyframes`
   0%,100% { box-shadow: 0 0 44px 8px #8b5cf655, 0 0 120px 44px #38bdf833; }
@@ -18,8 +19,7 @@ const CodeWrap = styled(GlowCard)<{ animated?: boolean }>(
     position: 'relative',
     background: 'radial-gradient(ellipse at 25% 0%, #181b39 50%, #38bdf822 100%)',
     fontSize: 15.6,
-    fontFamily:
-      'JetBrains Mono, Fira Mono, Menlo, Monaco, Consolas, Liberation Mono, monospace',
+    fontFamily: codeFonts,
     borderRadius: 21,
     boxShadow:
       '0 0 60px 18px #8b5cf633, 0 0 120px 54px #38bdf844',
@@ -31,14 +31,12 @@ const CodeWrap = styled(GlowCard)<{ animated?: boolean }>(
       ? `${codeGlowAnim} 6.5s cubic-bezier(.53,.32,.81,1.2) infinite alternate`
       : undefined,
     color: '#f1f5f9',
-    // Responsive
     maxWidth: '100%',
     fontWeight: 500,
     wordBreak: 'break-word',
   })
 );
 
-// See https://prismjs.com/#supported-languages for more
 export interface GlowCodeProps {
   code: string;
   language?: string;
@@ -55,9 +53,6 @@ export interface GlowCodeProps {
 }
 
 const highlight = (code: string, lang: string) => {
-  // PrismJS or fallback: simple htmlify (no highlighting)
-  // In production, you'd want Prism.highlight here
-  // This is a fallback for environments without Prism
   return `<span>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>`;
 };
 
@@ -78,7 +73,6 @@ const GlowCode: React.FC<GlowCodeProps> = ({
   const codeRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
 
-  // For advanced use, swap for PrismJS if you have it in your build
   const html = highlight(code, language);
 
   const lines = code.split('\n');
@@ -114,10 +108,12 @@ const GlowCode: React.FC<GlowCodeProps> = ({
                 : colorVariant === 'secondary'
                 ? '#f472b6'
                 : '#05ffa1',
-            fontWeight: 800,
-            fontSize: 15,
+            fontWeight: 900,
+            fontSize: 16,
+            fontFamily: `'Inter', 'Plus Jakarta Sans', 'Segoe UI', sans-serif`,
             color: colorVariant === 'accent' ? '#20123a' : '#fff',
-            letterSpacing: '.03em',
+            letterSpacing: '.045em',
+            textTransform: 'uppercase',
             borderTopLeftRadius: borderRadius,
             borderTopRightRadius: borderRadius,
           }}
@@ -147,6 +143,8 @@ const GlowCode: React.FC<GlowCodeProps> = ({
               boxShadow: '0 0 12px #8b5cf655',
               cursor: 'pointer',
               transition: 'background .15s, color .11s',
+              fontFamily: `'Inter', 'Plus Jakarta Sans', 'Segoe UI', sans-serif`,
+              letterSpacing: '.02em',
             }}
           >
             {copied ? 'Copied ✔' : 'Copy'}
@@ -156,7 +154,7 @@ const GlowCode: React.FC<GlowCodeProps> = ({
           ref={codeRef}
           style={{
             margin: 0,
-            fontFamily: 'inherit',
+            fontFamily: codeFonts,
             background: 'none',
             border: 'none',
             borderRadius: borderRadius,
@@ -178,7 +176,9 @@ const GlowCode: React.FC<GlowCodeProps> = ({
                 color: '#38bdf877',
                 paddingRight: '1.6em',
                 fontStyle: 'normal',
-                fontFamily: 'inherit',
+                fontFamily: codeFonts,
+                fontVariantNumeric: 'tabular-nums',
+                fontWeight: 600,
               }}
             >
               {Array.from({ length: linesCount }, (_, i) => (
@@ -187,7 +187,7 @@ const GlowCode: React.FC<GlowCodeProps> = ({
             </code>
           )}
           <code
-            style={{ minWidth: 0, width: '100%', display: 'block', fontFamily: 'inherit' }}
+            style={{ minWidth: 0, width: '100%', display: 'block', fontFamily: codeFonts }}
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </pre>

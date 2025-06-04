@@ -3,102 +3,112 @@ import type { Meta, StoryObj } from '@storybook/react';
 import GlowTypography from './GlowTypography';
 
 const meta: Meta = {
-  title: 'Ultra Fancy/GlowTypography',
+  title: 'Components/GlowTypography',
   component: GlowTypography,
   args: {
-    children: 'Glowing Headline',
-    variant: 'h4',
-    color: '#38bdf8',
+    children: 'Ultra Fancy Vibrant Headline',
+    variant: 'h3',
     glow: true,
+    glowColor: '#00ff99',
+    glowIntensity: 1.17,
+    gradient:
+      'linear-gradient(85deg,#00ff99 0%,#36d1c4 40%,#8b5cf6 85%,#fff92f 95%)',
+    gradientDir: '85deg',
+    shadowColors: [
+      '0 0 13px #00ff99b0',
+      '0 2px 21px #36d1c4b0',
+      '0 4px 34px #8b5cf6cc',
+      '0 4px 40px #00e676aa',
+    ],
+    fontWeight: 900,
+    clipText: true,
   },
   argTypes: {
     children: { control: 'text' },
-    variant: { control: 'select', options: ['h1','h2','h3','h4','h5','h6','subtitle1','subtitle2','body1','body2','caption','overline'] },
-    color: { control: 'color' },
+    variant: {
+      control: 'select',
+      options: [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'subtitle1',
+        'subtitle2',
+        'body1',
+        'body2',
+        'caption',
+        'overline',
+      ],
+    },
     glow: { control: 'boolean' },
+    glowColor: { control: 'color' },
+    glowIntensity: { control: { type: 'number', min: 0.5, max: 2, step: 0.05 } },
+    gradient: { control: 'text' },
+    gradientDir: { control: 'text' },
+    shadowColors: { control: 'object' },
+    fontWeight: { control: { type: 'number', min: 100, max: 900, step: 100 } },
+    clipText: { control: 'boolean' },
   },
 };
 
 export default meta;
+
 type Story = StoryObj;
 
-export const Playground: Story = { args: {} };
+export const Default: Story = { args: {} };
 
-export const GradientHeadline: Story = {
+export const ContactName: Story = {
   args: {
-    children: 'Gradient Rainbow Headline',
-    variant: 'h2',
-    color: 'linear-gradient(90deg, #f472b6 0%, #9333ea 45%, #38bdf8 100%)',
-    glow: true
+    children: 'Alex Chen',
+    variant: 'h6',
+    glow: true,
+    glowColor: '#00ff99',
+    glowIntensity: 1.1,
+    sx: { fontWeight: 700, letterSpacing: '0.01em' },
+    gradient: 'linear-gradient(90deg,#00ff99 0%,#36d1c4 50%,#8b5cf6 95%)',
+    shadowColors: [
+      '0 0 8px #00ff99d8',
+      '0 2px 13px #36d1c4aa',
+      '0 4px 19px #8b5cf668',
+    ],
+    clipText: true,
   },
-  parameters: {
-    backgrounds: { default: 'dark' },
-    docs: { description: { story: '🌈 Animated gradient, intense multi-color headline.' } }
-  }
 };
 
-export const ElectricSubTitle: Story = {
+export const DialogHeadline: Story = {
   args: {
-    children: 'Electric Blue Subtitle',
-    variant: 'h5',
-    color: '#38bdf8',
-    glow: true
+    children: 'Kontakte',
+    variant: 'h4',
+    glow: true,
+    glowColor: '#00ff99',
+    glowIntensity: 1.23,
+    sx: { fontWeight: 900, letterSpacing: '0.01em' },
+    gradient: 'linear-gradient(90deg,#00ff99,#36d1c4,#00e676 80%)',
+    shadowColors: [
+      '0 0 13px #00ff99b0',
+      '0 2px 21px #36d1c4b0',
+      '0 4px 34px #8b5cf6cc',
+      '0 4px 40px #00e676aa',
+    ],
+    clipText: true,
   },
-  parameters: {
-    backgrounds: { default: 'dark' },
-    docs: { description: { story: '⚡ Vivid blue subtitle, sharp glow for high-impact sections.' } }
-  }
-};
-export const SoftPastelBody: Story = {
-  args: {
-    children: 'Lovely soft pastel body text for serene UIs.',
-    variant: 'body1',
-    color: '#ffb3e6',
-    glow: true
-  },
-  parameters: {
-    backgrounds: { default: 'light' },
-    docs: { description: { story: '🎀 Gentle pink glow, body1 style, fits pastel dashboards.' } }
-  }
 };
 
-export const NeonError: Story = {
+export const CustomColor: Story = {
   args: {
-    children: 'Error: Something glitched!',
-    variant: 'body2',
-    color: '#ff0055',
-    glow: true
+    children: 'Custom Glow Color',
+    variant: 'h3',
+    glow: true,
+    glowColor: '#8b5cf6',
+    glowIntensity: 1.45,
+    gradient: 'linear-gradient(90deg,#8b5cf6,#1fb6ff,#f7971e 80%)',
+    shadowColors: [
+      '0 0 15px #8b5cf688',
+      '0 2px 18px #1fb6ffa8',
+      '0 4px 36px #f7971e77',
+    ],
+    clipText: true,
   },
-  parameters: {
-    backgrounds: { default: 'dark' },
-    docs: { description: { story: '🚨 Neon error red, body2, outstanding for alerts.' } }
-  }
-};
-
-export const AnimatedLive: Story = {
-  render: (args) => (
-    <div style={{
-      background: 'linear-gradient(120deg, #0f2027 0%, #2c5364 100%)',
-      padding: 44,
-      borderRadius: 19,
-      textAlign: 'center'
-    }}>
-      <GlowTypography
-        {...args}
-        variant="h3"
-        color="linear-gradient(90deg, #05ffa1 0%, #38bdf8 40%, #8b5cf6 75%)"
-        glow
-      >
-        <span role="img" aria-label="rocket">🚀</span> Animated Glow Typography Demo
-      </GlowTypography>
-      <div style={{ marginTop: 16, color: '#fff9', fontSize: 18 }}>Change the controls to see instant updates!</div>
-    </div>
-  ),
-  args: {
-    glow: true
-  },
-  parameters: {
-    backgrounds: { default: 'dark' },
-    docs: { description: { story: '💡 Animated, live-edit sample for designers & devs.' } }
-  }
 };

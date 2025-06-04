@@ -10,19 +10,23 @@ const pulseGlow = keyframes`
   55% { box-shadow: 0 0 104px 54px #8b5cf6bb, 0 0 190px 92px #f472b666; }
 `;
 
+const accentFonts = `'Inter', 'Plus Jakarta Sans', 'Segoe UI', 'Montserrat', 'sans-serif'`;
+
 const AdBadge = styled('div')({
   fontSize: 11.8,
-  fontWeight: 700,
+  fontWeight: 800,
+  fontFamily: accentFonts,
   color: '#fff',
   background: 'linear-gradient(92deg,#fc46a6 40%,#8b5cf6 120%)',
   borderRadius: 7,
   padding: '3px 11px 3px 11px',
   boxShadow: '0 0 8px #fc46a690',
-  letterSpacing: '.02em',
+  letterSpacing: '.07em',
   marginRight: 12,
   textTransform: 'uppercase',
   display: 'inline-block',
 });
+
 const ImageBox = styled(Box)({
   flex: '0 0 auto',
   alignSelf: 'flex-start',
@@ -110,7 +114,7 @@ const GlowAds: React.FC<GlowAdsProps> = ({
           onClick={() => { setClosed(true); onClose?.(); }}
           shape="circle"
           colorVariant="accent"
-          style={{ position: 'absolute', top: 12, right: 12, zIndex: 9 }}
+          style={{ position: 'absolute', top: 12, right: 12, zIndex: 9, background: 'rgba(32,18,58,0.27)' }}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M5.2 5.1l7.7 7.9m0-7.9L5.2 13" stroke="#fff" strokeWidth="2.1" strokeLinecap="round"/></svg>
         </GlowIconButton>
@@ -127,25 +131,56 @@ const GlowAds: React.FC<GlowAdsProps> = ({
               display: 'block',
               borderRadius: 16,
               pointerEvents: 'none',
+              boxShadow: '0 0 18px #05ffa1bb',
             }}
           />
         </ImageBox>
       )}
       <Box sx={{ flex: 1, minWidth: 0, textAlign: isHorizontal ? 'left' : 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: '.11em' }}>
           {badge && <AdBadge>{badge}</AdBadge>}
-          <span style={{ fontWeight: 900, fontSize: 19.5, letterSpacing: '.01em', color: '#fff', textShadow: '0 0 16px #8b5cf688' }}>{headline}</span>
+          <span style={{
+            fontWeight: 900,
+            fontSize: 20.5,
+            fontFamily: accentFonts,
+            letterSpacing: '.03em',
+            color: '#fff',
+            textShadow: '0 0 16px #8b5cf688,0 0 2px #05ffa199',
+            textTransform: 'uppercase',
+            lineHeight: 1.12,
+            }}> {headline}</span>
         </div>
         {subline && (
-          <div style={{ fontSize: 14.5, fontWeight: 400, marginTop: 2, color: '#05ffa1', opacity: .92, textShadow: '0 0 10px #8b5cf644' }}>{subline}</div>
+          <div
+            style={{
+              fontSize: 15.6,
+              fontWeight: 600,
+              fontFamily: accentFonts,
+              marginTop: 2,
+              color: '#05ffa1',
+              opacity: 1,
+              textShadow: '0 0 10px #8b5cf644',
+              wordBreak: 'break-word',
+              letterSpacing: '.01em',
+            }}
+          >{subline}</div>
         )}
         {children}
         {ctaLabel && (
-          <div style={{ marginTop: 9 }}>
+          <div style={{ marginTop: 13 }}>
             <GlowingButton
               onClick={onCtaClick}
-              style={{ fontWeight: 800, padding: '8px 27px', fontSize: 16.5, borderRadius: 30, letterSpacing: '0.03em' }}
-              glowIntensity={1.09}
+              style={{
+                fontWeight: 900,
+                fontFamily: accentFonts,
+                padding: '10px 30px',
+                fontSize: 16.7,
+                borderRadius: 31,
+                letterSpacing: '.045em',
+                textTransform: 'uppercase',
+                boxShadow: '0 0 33px #8b5cf655',
+              }}
+              glowIntensity={1.19}
               {...(ctaHref ? { component: 'a', href: ctaHref, target: '_blank', rel: 'noopener noreferrer' } : {})}
             >
               {ctaLabel}

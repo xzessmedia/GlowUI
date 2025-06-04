@@ -1,11 +1,51 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import GlowGantt from './GlowGantt';
+import GlowGantt, { GlowGanttTask } from './GlowGantt';
 
-const exampleTasks = [
-  { label: 'Design', start: 1, end: 6, color: '#38bdf8' },
-  { label: 'Development', start: 3, end: 11, color: '#6366f1' },
-  { label: 'Testing', start: 9, end: 13, color: '#f472b6' }
+// Provide a base date for demo
+const now = new Date();
+function daysFromNow(n: number) {
+  return new Date(now.getTime() + n * 24 * 60 * 60 * 1000);
+}
+const exampleTasks: GlowGanttTask[] = [
+  {
+    id: 'design',
+    title: 'Design',
+    subtitle: 'Wireframes, UI, and concepts',
+    startDate: daysFromNow(0),
+    endDate: daysFromNow(7),
+    status: 'completed',
+    assignee: { name: 'Alice', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
+    featured: true,
+  },
+  {
+    id: 'dev',
+    title: 'Development',
+    subtitle: 'App implementation',
+    startDate: daysFromNow(5),
+    endDate: daysFromNow(21),
+    status: 'in-progress',
+    assignee: { name: 'Bob', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
+  },
+  {
+    id: 'test',
+    title: 'Testing',
+    subtitle: 'Quality Assurance',
+    startDate: daysFromNow(20),
+    endDate: daysFromNow(30),
+    status: 'pending',
+    assignee: { name: 'Carol' },
+  },
+  {
+    id: 'ship',
+    title: 'Release',
+    subtitle: 'Launch day 🚀',
+    startDate: daysFromNow(30),
+    endDate: daysFromNow(32),
+    status: 'pending',
+    assignee: { name: 'Dana', avatar: 'https://randomuser.me/api/portraits/women/37.jpg' },
+    featured: true,
+  }
 ];
 
 const meta: Meta = {
@@ -13,13 +53,13 @@ const meta: Meta = {
   component: GlowGantt,
   args: {
     tasks: exampleTasks,
-    weeks: 14,
     glow: true,
+    timelineUnit: 'weeks'
   },
   argTypes: {
     tasks: { control: false },
-    weeks: { control: 'number', min: 1 },
     glow: { control: 'boolean' },
+    timelineUnit: { control: 'radio', options: ['days', 'weeks', 'months'] }
   },
 };
 
