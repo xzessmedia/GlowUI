@@ -1,5 +1,5 @@
 {
-  "name": "glow-ui",
+  "name": "glow-ui-mui",
   "version": "1.0.0",
   "description": "A configurable, glowing UI framework built on Material-UI",
   "license": "MIT",
@@ -11,6 +11,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "rollup -c",
     "build:watch": "rollup -c -w",
