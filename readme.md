@@ -1,7 +1,8 @@
 # Glow UI
 
-[![NPM](https://img.shields.io/npm/v/glow-ui.svg)](https://www.npmjs.com/package/glow-ui)
+[![NPM](https://img.shields.io/npm/v/glow-ui.svg)](https://www.npmjs.com/package/glow-ui-mui)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-GlowUI-blue?logo=githubpages&style=flat-square)](https://xzessmedia.github.io/GlowUI/)
 
 Glow UI is a modern, vibrant, and highly customizable UI component library built on top of Material-UI. Designed for React applications, Glow UI allows developers to effortlessly create applications with a unique, glowing aesthetic.
 
@@ -20,7 +21,7 @@ Glow UI is a modern, vibrant, and highly customizable UI component library built
 To install Glow UI, you need to have [Node.js](https://nodejs.org/) installed. Run the following commands to add Glow UI to your project:
 
 ```shell
-npm install glow-ui @mui/material @emotion/react @emotion/styled
+npm install glow-ui-mui @mui/material @emotion/react @emotion/styled
 ```
 
 ## Quick Start
@@ -73,7 +74,8 @@ Modify the `config` object in `GlowThemeProvider` to tailor the design to your n
 Clone the repository and install dependencies:
 
 ```shell
-git clone https://github.com/your-username/glow-ui.git
+
+git clone https://github.com/xzessmedia/GlowUI.git
 cd glow-ui
 npm install
 ```
@@ -101,6 +103,24 @@ We welcome contributions from the community! If you'd like to contribute, please
 5. Open a Pull Request.
 
 Please adhere to the project's coding standards and ensure all tests pass before submitting.
+
+## Metadata
+
+The following fields should be included in your `package.json`:
+
+```json
+{
+  "homepage": "https://xzessmedia.github.io/GlowUI/",
+  "docs": "https://xzessmedia.github.io/GlowUI/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xzessmedia/GlowUI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xzessmedia/GlowUI/issues"
+  }
+}
+```
 
 ## License
 
