@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 
 export interface GlowingButtonProps extends ButtonProps {
   glowIntensity?: number;
+  colorVariant?: 'primary' | 'secondary' | 'accent';
 }
 
 const StyledGlowButton = styled(Button, {
@@ -12,17 +13,16 @@ const StyledGlowButton = styled(Button, {
   ({
     theme,
   glowIntensity = 0.8,
-    color = 'primary',
+    colorVariant = 'primary',
     size = 'medium',
     disabled,
 }) => {
-    const primaryColor = '#6366f1';
-    const primaryDark = '#4f46e5';
-    const secondaryColor = '#8b5cf6';
-    const secondaryDark = '#7c3aed';
-    const currentColor = color === 'primary' ? primaryColor : secondaryColor;
-    const currentDark = color === 'primary' ? primaryDark : secondaryDark;
-
+    const palette: Record<string, { main: string; dark: string }> = {
+      primary:   { main: '#6366f1', dark: '#4f46e5' },
+      secondary: { main: '#8b5cf6', dark: '#7c3aed' },
+      accent:    { main: '#05ffa1', dark: '#38bdf8' },
+};
+    const { main: currentColor, dark: currentDark } = palette[colorVariant] || palette.primary;
     return {
       position: 'relative',
       padding:
@@ -42,7 +42,7 @@ const StyledGlowButton = styled(Button, {
         : size === 'large'
           ? '18px'
           : '16px',
-      fontFamily: 'inherit', // was 'Inter, sans-serif'
+      fontFamily: 'inherit',
       textTransform: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',
       overflow: 'hidden',
@@ -114,7 +114,7 @@ const StyledGlowButton = styled(Button, {
 const GlowingButton: React.FC<GlowingButtonProps> = ({ 
   children = 'Glow Button',
   glowIntensity = 0.8,
-  color = 'primary',
+  colorVariant = 'primary',
   size = 'medium',
   disabled = false,
   onClick,
@@ -131,7 +131,7 @@ const GlowingButton: React.FC<GlowingButtonProps> = ({
       variant="contained"
       onClick={onClick}
       disabled={disabled}
-      color={color}
+      colorVariant={colorVariant}
       size={size}
       glowIntensity={glowIntensity}
       onMouseDown={handleMouseDown}

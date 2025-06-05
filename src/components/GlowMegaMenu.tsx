@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { styled, keyframes } from '@mui/material/styles';
-import Popover from '@mui/material/Popover';
+import Popover, { PopoverOrigin } from '@mui/material/Popover';
 import Grow from '@mui/material/Grow';
 import Box from '@mui/material/Box';
 import GlowingButton from './GlowingButton';
@@ -31,7 +31,6 @@ const GlowSurface = styled(GlowCard)(({ theme }) => ({
   gap: 44,
 }));
 
-// MegaMenu section layout styles
 const Column = styled(Box)({
   flex: '1 1 190px',
   minWidth: 180,
@@ -95,16 +94,16 @@ export interface GlowMegaMenuProps {
   promo?: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  anchorOrigin?: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'right' };
-  transformOrigin?: { vertical: 'top' | 'bottom'; horizontal: 'left' | 'right' };
-  children?: React.ReactNode;  // for completely custom content
+  anchorOrigin?: PopoverOrigin;
+  transformOrigin?: PopoverOrigin;
+  children?: React.ReactNode;
   triggerProps?: React.ComponentProps<typeof GlowingButton>;
   style?: React.CSSProperties;
   menuStyle?: React.CSSProperties;
 }
 
-const defaultAnchor = { vertical: 'bottom', horizontal: 'left' };
-const defaultTransform = { vertical: 'top', horizontal: 'left' };
+const defaultAnchor: PopoverOrigin = { vertical: 'bottom', horizontal: 'left' };
+const defaultTransform: PopoverOrigin = { vertical: 'top', horizontal: 'left' };
 
 const GlowMegaMenu: React.FC<GlowMegaMenuProps> = ({
   label = 'Menu',
@@ -133,7 +132,6 @@ const GlowMegaMenu: React.FC<GlowMegaMenuProps> = ({
     onOpenChange?.(false);
   };
 
-  // Keyboard accessibility (arrow/esc)
   const onKeyDown: React.KeyboardEventHandler = (e) => {
     if (e.key === 'Escape') {
       handleClose();
@@ -199,11 +197,9 @@ const GlowMegaMenu: React.FC<GlowMegaMenuProps> = ({
                   ))}
                 </>
               )}
-              {/* Promo */}
               {promo && <PromoBox>{promo}</PromoBox>}
             </>
           )}
-          {/* Absolute close btn (top-right) */}
           <GlowIconButton onClick={handleClose} style={{ position: 'absolute', top: 11, right: 11, zIndex: 9, background: '#1113', border: 'none' }}>
             <svg width="19" height="19" viewBox="0 0 18 18" fill="none"><path d="M5.2 5.1l7.7 7.9m0-7.9L5.2 13" stroke="#fff" strokeWidth="2.1" strokeLinecap="round"/></svg>
           </GlowIconButton>

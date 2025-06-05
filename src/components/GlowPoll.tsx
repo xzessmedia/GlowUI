@@ -48,7 +48,7 @@ const OptionText = styled('div')({
 export interface GlowPollOption {
   label: React.ReactNode;
   value: string | number;
-  color?: string; // Vibrant bar color (default rotates)
+  color?: string;
   icon?: React.ReactNode;
 }
 
@@ -60,7 +60,7 @@ export interface GlowPollProps {
   multiple?: boolean;
   disabled?: boolean;
   showResults?: boolean;
-  results?: number[]; // list of vote % per option (or computes from pickedValue if provided)
+  results?: number[];
   gradient?: string;
   glowBars?: boolean;
   animatedBars?: boolean;
@@ -96,9 +96,7 @@ const GlowPoll: React.FC<GlowPollProps> = ({
   footer,
   style,
 }) => {
-  // Compute results if not provided
   const totalVotes = results.reduce((a, b) => a + b, 0);
-  // For demo, fallback: randomize if not provided
   const fallbackResults = options.map((_, i) => Math.round(Math.abs(Math.sin(i + 2)) * 100));
   const fallbackTotal = fallbackResults.reduce((a, b) => a + b, 0) || 1;
 

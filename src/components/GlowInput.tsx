@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 
 interface GlowInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  colorVariant?: 'primary' | 'secondary';
+  colorVariant?: 'primary' | 'secondary' | 'accent';
   glowIntensity?: number;
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
@@ -11,12 +11,21 @@ interface GlowInputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const GlowInputWrapper = styled('div')<{
   focused: boolean;
-  colorVariant: 'primary' | 'secondary';
+  colorVariant: 'primary' | 'secondary' | 'accent';
   glowIntensity: number;
 }>(({ theme, focused, colorVariant, glowIntensity }) => {
   const primaryColor = theme.palette?.primary?.main || '#6366f1';
   const secondaryColor = theme.palette?.secondary?.main || '#8b5cf6';
-  const activeColor = colorVariant === 'primary' ? primaryColor : secondaryColor;
+  const accentColor =
+    theme.palette?.accent?.main ||
+    theme.palette?.info?.main ||
+    '#22d3ee';
+  const activeColor =
+    colorVariant === 'primary'
+      ? primaryColor
+      : colorVariant === 'secondary'
+      ? secondaryColor
+      : accentColor;
   return {
     position: 'relative',
     margin: '24px 0',
@@ -35,11 +44,20 @@ const GlowInputWrapper = styled('div')<{
 });
 
 const GlowInputField = styled('input')<{
-  colorVariant: 'primary' | 'secondary';
+  colorVariant: 'primary' | 'secondary' | 'accent';
 }>(({ theme, colorVariant }) => {
   const primaryColor = theme.palette?.primary?.main || '#6366f1';
   const secondaryColor = theme.palette?.secondary?.main || '#8b5cf6';
-  const activeColor = colorVariant === 'primary' ? primaryColor : secondaryColor;
+  const accentColor =
+    theme.palette?.accent?.main ||
+    theme.palette?.info?.main ||
+    '#22d3ee';
+  const activeColor =
+    colorVariant === 'primary'
+      ? primaryColor
+      : colorVariant === 'secondary'
+      ? secondaryColor
+      : accentColor;
   return {
     outline: 'none',
     border: 'none',
@@ -53,7 +71,6 @@ const GlowInputField = styled('input')<{
     fontWeight: 500,
     letterSpacing: 0.3,
     caretColor: activeColor,
-    // Hide native autofill background
     '&:-webkit-autofill': {
       WebkitBoxShadow: '0 0 0 100px #191e28 inset',
       WebkitTextFillColor: '#fff',
@@ -64,11 +81,20 @@ const GlowInputField = styled('input')<{
 const GlowInputLabel = styled('label')<{
   focused: boolean;
   filled: boolean;
-  colorVariant: 'primary' | 'secondary';
+  colorVariant: 'primary' | 'secondary' | 'accent';
 }>(({ theme, focused, filled, colorVariant }) => {
   const primaryColor = theme.palette.primary.main || '#6366f1';
   const secondaryColor = theme.palette.secondary.main || '#8b5cf6';
-  const glowColor = colorVariant === 'primary' ? primaryColor : secondaryColor;
+  const accentColor =
+    theme.palette?.accent?.main ||
+    theme.palette?.info?.main ||
+    '#22d3ee';
+  const glowColor =
+    colorVariant === 'primary'
+      ? primaryColor
+      : colorVariant === 'secondary'
+      ? secondaryColor
+      : accentColor;
   return {
     position: 'absolute',
     left: 18,
@@ -91,11 +117,20 @@ const GlowInputLabel = styled('label')<{
 
 const GlowBar = styled('span')<{
   focused: boolean;
-  colorVariant: 'primary' | 'secondary';
+  colorVariant: 'primary' | 'secondary' | 'accent';
 }>(({ theme, focused, colorVariant }) => {
   const primaryColor = theme.palette.primary.main || '#6366f1';
   const secondaryColor = theme.palette.secondary.main || '#8b5cf6';
-  const activeColor = colorVariant === 'primary' ? primaryColor : secondaryColor;
+  const accentColor =
+    theme.palette?.accent?.main ||
+    theme.palette?.info?.main ||
+    '#22d3ee';
+  const activeColor =
+    colorVariant === 'primary'
+      ? primaryColor
+      : colorVariant === 'secondary'
+      ? secondaryColor
+      : accentColor;
   return {
     content: '""',
     position: 'absolute',
