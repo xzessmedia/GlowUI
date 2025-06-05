@@ -74,7 +74,6 @@ Modify the `config` object in `GlowThemeProvider` to tailor the design to your n
 Clone the repository and install dependencies:
 
 ```shell
-
 git clone https://github.com/xzessmedia/GlowUI.git
 cd glow-ui
 npm install

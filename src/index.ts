@@ -1,2 +1,2 @@
 // src/components/index.ts
-export { default as GlowingButton } from './components/GlowingButton';
+export { default as GlowButton } from './components/GlowingButton';

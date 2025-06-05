@@ -8,6 +8,15 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://xzessmedia.github.io/GlowUI/",
+  "docs": "https://xzessmedia.github.io/GlowUI/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xzessmedia/GlowUI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xzessmedia/GlowUI/issues"
+  },
   "files": [
     "dist"
   ],
